@@ -76,6 +76,9 @@ def format_row(arr)
   ].join
 end
 
+win1.nodelay=true
+sleepy_time = 2
+
 while true
   ctr = 0
 
@@ -88,11 +91,17 @@ while true
     # check that there's data in packet_data and that it matches the Fujitsu Regex, since we'll get lots of irrelevant BLE packets
     row_string = format_row([tag[:id].chars.each_slice(2).map(&:join).join(" "), tag[:rssi].to_s])
     (index > 2) ? render_row(row_string, index + 1) : render_row(row_string, index + 1, HIGHLIGHT)
-    refresh
-  end
-  sleep(0.2)
 
-  win1 << "THING"
+    input = win1.getch
+    sleepy_time = "0.#{input}".to_f if input
+
+  end
+  render_row("resting for #{sleepy_time}", tags.length + 2)
+  sleep(sleepy_time)
+
+  refresh
+
 end
 
+puts "THANKS FOR PLAYING"
 # end of main
